@@ -1,132 +1,98 @@
-# Pong Game
-# By Ebrahim Basha/ TheRealAce
+import pygame
+from pygame.locals import *
+from sys import exit
 
-import turtle
-import os
-import time
+pygame.init()
 
-wn = turtle.Screen()
-wn.title("Pong by Ebrahim Basha")
-wn.bgcolor("black")
-wn.setup(width=800, height=600)
-wn.tracer(0)
+# Set up the display window
+screen = pygame.display.set_mode((640, 480), 0, 32)
+pygame.display.set_caption("Pong Pong!")
 
-# Score
-score_a = 0
-score_b = 0
+# Create surfaces for the background, paddles, and ball
+background = pygame.Surface((640, 480))
+background.fill((0, 0, 0))  # Black background
 
-# Paddle A
-paddle_a = turtle.Turtle()
-paddle_a.speed(0)
-paddle_a.shape("square")
-paddle_a.color("white")
-paddle_a.shapesize(stretch_wid=5,stretch_len=1)
-paddle_a.penup()
-paddle_a.goto(-350, 0)
+# Paddle surfaces
+bar = pygame.Surface((10, 50))  # Paddle dimensions
+bar1 = bar.convert()
+bar1.fill((0, 0, 255))  # Blue paddle for Player 1
+bar2 = bar.convert()
+bar2.fill((255, 0, 0))  # Red paddle for Player 2
 
-# Paddle B
-paddle_b = turtle.Turtle()
-paddle_b.speed(0)
-paddle_b.shape("square")
-paddle_b.color("white")
-paddle_b.shapesize(stretch_wid=5,stretch_len=1)
-paddle_b.penup()
-paddle_b.goto(350, 0)
+# Ball surface
+circ_sur = pygame.Surface((15, 15))
+pygame.draw.circle(circ_sur, (0, 255, 0), (15 // 2, 15 // 2), 15 // 2)  # Green ball
+circle = circ_sur.convert()
+circle.set_colorkey((0, 0, 0))  # Make the ball background transparent
 
-# Ball
-ball = turtle.Turtle()
-ball.speed(0)
-ball.shape("square")
-ball.color("white")
-ball.penup()
-ball.goto(0, 0)
-ball.dx = 300  # pixels per second
-ball.dy = 300  # pixels per second
+# Initial positions and movement speeds
+bar1_x, bar2_x = 10., 620.  # X positions for paddles
+bar1_y, bar2_y = 215., 215.  # Starting Y positions for paddles
+circle_x, circle_y = 307.5, 232.5  # Ball starting position
+speed_x, speed_y = 250., 250.  # Ball speed in pixels per second
+bar1_score, bar2_score = 0, 0  # Player scores
 
-# Pen
-pen = turtle.Turtle()
-pen.speed(0)
-pen.shape("square")
-pen.color("white")
-pen.penup()
-pen.hideturtle()
-pen.goto(0, 260)
-pen.write("Player A: 0  Player B: 0", align="center", font=("Courier", 24, "normal"))
-
-# Functions
-def paddle_a_up():
-    y = paddle_a.ycor()
-    y += 60 # paddle move speed
-    paddle_a.sety(y)
-
-def paddle_a_down():
-    y = paddle_a.ycor()
-    y -= 60 # paddle move speed
-    paddle_a.sety(y)
-
-def paddle_b_up():
-    y = paddle_b.ycor()
-    y += 60 # paddle move speed
-    paddle_b.sety(y)
-
-def paddle_b_down():
-    y = paddle_b.ycor()
-    y -= 60 # paddle move speed
-    paddle_b.sety(y)
-
-# Keyboard bindings
-wn.listen()
-wn.onkey(paddle_a_up, "w")
-wn.onkey(paddle_a_down, "s")
-wn.onkey(paddle_b_up, "Up")
-wn.onkey(paddle_b_down, "Down")
+# Setup for frame rate control and font rendering
+clock = pygame.time.Clock()
+font = pygame.font.SysFont("calibri", 40)
 
 # Main game loop
-last_time = time.time()
 while True:
-    current_time = time.time()
-    delta_time = current_time - last_time
-    last_time = current_time
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == QUIT:
+            exit()  # Exit the game if the window is closed
 
-    wn.update()
-    
-    # Move the ball
-    ball.setx(ball.xcor() + ball.dx * delta_time)
-    ball.sety(ball.ycor() + ball.dy * delta_time)
+    # Render the current scores
+    score1 = font.render(str(bar1_score), True, (255, 255, 255))
+    score2 = font.render(str(bar2_score), True, (255, 255, 255))
 
-    # Border checking
+    # Draw the background, paddles, ball, and scores
+    screen.blit(background, (0, 0))  # Clear the screen
+    pygame.draw.rect(screen, (255, 255, 255), (5, 5, 630, 470), 2)  # Draw border
+    pygame.draw.aaline(screen, (255, 255, 255), (330, 5), (330, 475))  # Center line
+    screen.blit(bar1, (bar1_x, bar1_y))  # Draw Player 1's paddle
+    screen.blit(bar2, (bar2_x, bar2_y))  # Draw Player 2's paddle
+    screen.blit(circle, (circle_x, circle_y))  # Draw the ball
+    screen.blit(score1, (250., 210.))  # Display Player 1's score
+    screen.blit(score2, (380., 210.))  # Display Player 2's score
 
-    # Top and bottom
-    if ball.ycor() > 290:
-        ball.sety(290)
-        ball.dy *= -1
-        os.system("afplay bounce.wav&")
-    
-    elif ball.ycor() < -290:
-        ball.sety(-290)
-        ball.dy *= -1
-        os.system("afplay bounce.wav&")
+    # Update ball position based on its speed
+    time_passed = clock.tick(30)  # Cap the frame rate to 30 FPS
+    time_sec = time_passed / 1000.0  # Convert milliseconds to seconds
 
-    # Left and right
-    if ball.xcor() > 350:
-        score_a += 1
-        pen.clear()
-        pen.write("Player A: {}  Player B: {}".format(score_a, score_b), align="center", font=("Courier", 24, "normal"))
-        ball.goto(0, 0)
-        ball.dx *= -1
+    circle_x += speed_x * time_sec
+    circle_y += speed_y * time_sec
 
-    elif ball.xcor() < -350:
-        score_b += 1
-        pen.clear()
-        pen.write("Player A: {}  Player B: {}".format(score_a, score_b), align="center", font=("Courier", 24, "normal"))
-        ball.goto(0, 0)
-        ball.dx *= -1
+    # Collision detection with paddles
+    if circle_x <= bar1_x + 10.:
+        if bar1_y - 7.5 <= circle_y <= bar1_y + 42.5:
+            circle_x = 20.
+            speed_x = -speed_x  # Reverse X direction
 
-    # Paddle and ball collisions
-    if ball.xcor() < -340 and ball.ycor() < paddle_a.ycor() + 50 and ball.ycor() > paddle_a.ycor() - 50:
-        ball.dx *= -1 
-        os.system("afplay bounce.wav&")
-    
-    elif ball.xcor() > 340 and ball.ycor() < paddle_b.ycor() + 50 and ball.ycor() > paddle_b.ycor() - 50:
-        ball.dx *= -1
-        os.system("afplay bounce.wav&")
+    if circle_x >= bar2_x - 15.:
+        if bar2_y - 7.5 <= circle_y <= bar2_y + 42.5:
+            circle_x = 605.
+            speed_x = -speed_x  # Reverse X direction
+
+    # Ball goes out of bounds, update the score
+    if circle_x < 5.:
+        bar2_score += 1
+        circle_x, circle_y = 320., 232.5  # Reset ball position
+        bar1_y, bar2_y = 215., 215.  # Reset paddles
+
+    elif circle_x > 620.:
+        bar1_score += 1
+        circle_x, circle_y = 307.5, 232.5  # Reset ball position
+        bar1_y, bar2_y = 215., 215.  # Reset paddles
+
+    # Ball collision with top and bottom of the screen
+    if circle_y <= 10.:
+        speed_y = -speed_y  # Reverse Y direction
+        circle_y = 10.
+
+    elif circle_y >= 457.5:
+        speed_y = -speed_y  # Reverse Y direction
+        circle_y = 457.5
+
+    pygame.display.update()  # Update the display with new drawings
