@@ -1,7 +1,9 @@
 import pygame
 from pygame.locals import *
 from sys import exit
-
+import game_opencv
+from game_opencv import cv_setup
+cv_setup()
 pygame.init()
 
 # Set up the display window
@@ -37,6 +39,7 @@ clock = pygame.time.Clock()
 font = pygame.font.SysFont("calibri", 40)
 
 # Main game loop
+
 while True:
     # Handle events
     for event in pygame.event.get():
