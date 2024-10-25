@@ -1,9 +1,8 @@
 import pygame
 from pygame.locals import *
 from sys import exit
-import game_opencv
-from game_opencv import cv_setup
-cv_setup()
+
+#
 pygame.init()
 
 # Set up the display window
@@ -44,7 +43,8 @@ while True:
     # Handle events
     for event in pygame.event.get():
         if event.type == QUIT:
-            exit()  # Exit the game if the window is closed
+            exit()
+
 
     # Render the current scores
     score1 = font.render(str(bar1_score), True, (255, 255, 255))
@@ -98,4 +98,5 @@ while True:
         speed_y = -speed_y  # Reverse Y direction
         circle_y = 457.5
 
-    pygame.display.update()  # Update the display with new drawings
+    pygame.display.update()
+    # Update the display with new drawings
