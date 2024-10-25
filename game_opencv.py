@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 
+cap = None  # Variável global para captura de vídeo
+
 def cv_setup():
     # Configurações do OpenCV para segmentação de cores
     cap = cv2.VideoCapture(0)  # Abre a webcam
@@ -11,6 +13,7 @@ def cv_setup():
     lower_blue = np.array([100, 150, 0])  # Lower bound for blue
     upper_blue = np.array([140, 255, 255])  # Upper bound for blue
 
+def cv_update():
     while True:
         ret, frame = cap.read()
         if not ret:
