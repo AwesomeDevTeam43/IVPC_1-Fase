@@ -48,10 +48,16 @@ while True:
         if event.type == QUIT:
             exit()
 
+    if game_opencv.red_y_coords:
+        bar2_y = game_opencv.red_y_coords[0]  # Use the first detected red position
+    if game_opencv.blue_y_coords:
+        bar1_y = game_opencv.blue_y_coords[0]
 
     # Render the current scores
     score1 = font.render(str(bar1_score), True, (255, 255, 255))
     score2 = font.render(str(bar2_score), True, (255, 255, 255))
+
+
 
     # Draw the background, paddles, ball, and scores
     screen.blit(background, (0, 0))  # Clear the screen

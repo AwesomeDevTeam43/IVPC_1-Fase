@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # OpenCV settings for color segmentation
-cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(0)
 
 # Check if the webcam is opened correctly
 if not cap.isOpened():
@@ -15,8 +15,12 @@ upper_red = np.array([180, 255, 255])  # Upper bound for red
 lower_blue = np.array([100, 150, 0])  # Lower bound for blue
 upper_blue = np.array([140, 255, 255])  # Upper bound for blue
 
+red_y_coords = []
+blue_y_coords = []
+
 
 def cv_update():
+    global red_y_coords, blue_y_coords
     if cap is None or not cap.isOpened():
         print("Webcam is not initialized or failed to open.")
         return
