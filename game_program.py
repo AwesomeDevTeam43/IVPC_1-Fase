@@ -2,12 +2,11 @@ import pygame
 from pygame.locals import *
 from sys import exit
 
-from game_opencv import cv_setup
+import game_opencv
 from game_opencv import cv_update
 
 #
 pygame.init()
-cv_setup()
 # Set up the display window
 screen = pygame.display.set_mode((640, 480), 0, 32)
 pygame.display.set_caption("Pong Pong!")

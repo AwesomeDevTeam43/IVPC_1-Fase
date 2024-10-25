@@ -1,34 +1,22 @@
 import cv2
 import numpy as np
 
-cap = None  # Global variable for video capture
+# OpenCV settings for color segmentation
+cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
-lower_red = None
-lower_blue = None
-upper_blue = None
-upper_red = None
+# Check if the webcam is opened correctly
+if not cap.isOpened():
+    print("Failed to open the webcam.")
+    exit()
 
-
-def cv_setup():
-    global cap
-    global lower_red, lower_blue, upper_blue, upper_red
-    # OpenCV settings for color segmentation
-    cap = cv2.VideoCapture(0)  # Open the webcam
-
-    # Check if the webcam is opened correctly
-    if not cap.isOpened():
-        print("Failed to open the webcam.")
-        return
-
-    # Define color ranges
-    lower_red = np.array([170, 100, 100])  # Lower bound for red
-    upper_red = np.array([180, 255, 255])  # Upper bound for red
-    lower_blue = np.array([100, 150, 0])   # Lower bound for blue
-    upper_blue = np.array([140, 255, 255]) # Upper bound for blue
+# Define color ranges
+lower_red = np.array([170, 100, 100])  # Lower bound for red
+upper_red = np.array([180, 255, 255])  # Upper bound for red
+lower_blue = np.array([100, 150, 0])  # Lower bound for blue
+upper_blue = np.array([140, 255, 255])  # Upper bound for blue
 
 
 def cv_update():
-    global cap
     if cap is None or not cap.isOpened():
         print("Webcam is not initialized or failed to open.")
         return
@@ -39,10 +27,10 @@ def cv_update():
         return
 
     # Convert to HSV
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)  
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     # Create masks for red and blue
-    mask_red = cv2.inRange(hsv, lower_red, upper_red)  
-    mask_blue = cv2.inRange(hsv, lower_blue, upper_blue)  
+    mask_red = cv2.inRange(hsv, lower_red, upper_red)
+    mask_blue = cv2.inRange(hsv, lower_blue, upper_blue)
 
     # Combine the masks
     mask_combined = cv2.bitwise_or(mask_red, mask_blue)
@@ -89,17 +77,9 @@ def cv_update():
     if cv2.waitKey(1) & 0xFF == ord('q'):
         cv_cleanup()
 
-
 def cv_cleanup():
     global cap
     if cap is not None and cap.isOpened():
         cap.release()
     cv2.destroyAllWindows()
 
-
-# Run the setup
-cv_setup()
-
-# Main loop to update frames
-while True:
-    cv_update()
