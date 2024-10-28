@@ -18,6 +18,29 @@ upper_blue = np.array([140, 255, 255])  # Upper bound for blue
 red_y_coords = []
 blue_y_coords = []
 
+# Inicializar os valores HSV
+h_min, h_max = 75, 90
+s_min, s_max = 92, 255
+v_min, v_max = 64, 255
+
+# Função para atualizar os valores HSV a partir das trackbars
+def update_hsv_values(val):
+    global h_min, h_max, s_min, s_max, v_min, v_max
+    h_min = cv2.getTrackbarPos('H Min', 'Original Frame')
+    h_max = cv2.getTrackbarPos('H Max', 'Original Frame')
+    s_min = cv2.getTrackbarPos('S Min', 'Original Frame')
+    s_max = cv2.getTrackbarPos('S Max', 'Original Frame')
+    v_min = cv2.getTrackbarPos('V Min', 'Original Frame')
+    v_max = cv2.getTrackbarPos('V Max', 'Original Frame')
+
+# Configuração da janela e das trackbars
+cv2.namedWindow('Original Frame')
+cv2.createTrackbar('H Min', 'Original Frame', h_min, 180, update_hsv_values)
+cv2.createTrackbar('H Max', 'Original Frame', h_max, 180, update_hsv_values)
+cv2.createTrackbar('S Min', 'Original Frame', s_min, 255, update_hsv_values)
+cv2.createTrackbar('S Max', 'Original Frame', s_max, 255, update_hsv_values)
+cv2.createTrackbar('V Min', 'Original Frame', v_min, 255, update_hsv_values)
+cv2.createTrackbar('V Max', 'Original Frame', v_max, 255, update_hsv_values)
 
 def cv_update():
     global red_y_coords, blue_y_coords
@@ -73,7 +96,7 @@ def cv_update():
     # Display the original image and the masks
     cv2.imshow("Original Frame", frame)
     cv2.imshow("Red Mask", mask_red)
-    cv2.imshow("Blue Mask", mask_blue)
+    #cv2.imshow("Blue Mask", mask_blue)
     cv2.imshow("Combined Mask", mask_combined)
     cv2.imshow("Segmented Result", result)
 
