@@ -57,8 +57,6 @@ while True:
     score1 = font.render(str(bar1_score), True, (255, 255, 255))
     score2 = font.render(str(bar2_score), True, (255, 255, 255))
 
-
-
     # Draw the background, paddles, ball, and scores
     screen.blit(background, (0, 0))  # Clear the screen
     pygame.draw.rect(screen, (255, 255, 255), (5, 5, 630, 470), 2)  # Draw border
