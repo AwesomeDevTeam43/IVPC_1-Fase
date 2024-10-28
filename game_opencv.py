@@ -43,6 +43,13 @@ cv2.createTrackbar('V Min', 'Original Frame', v_min, 255, update_hsv_values)
 cv2.createTrackbar('V Max', 'Original Frame', v_max, 255, update_hsv_values)
 
 def cv_update():
+    lower_red = np.array([170, 100, 100])  # Lower bound for red
+    upper_red = np.array([180, 255, 255])  # Upper bound for red
+    lower_blue = np.array([h_min, s_min, v_min])  # Lower bound for blue
+    upper_blue = np.array([h_max, s_max, v_max])
+
+
+
     global red_y_coords, blue_y_coords
     if cap is None or not cap.isOpened():
         print("Webcam is not initialized or failed to open.")
