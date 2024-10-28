@@ -3,5 +3,9 @@
   <component name="Black">
     <option name="sdkName" value="IVPC_1-Fase" />
   </component>
+<<<<<<< HEAD
   <component name="ProjectRootManager" version="2" project-jdk-name="IVC2425" project-jdk-type="Python SDK" />
+=======
+  <component name="ProjectRootManager" version="2" project-jdk-name="KA" project-jdk-type="Python SDK" />
+>>>>>>> 281900dbc1b259471413084dcb8ab6782ae65710
 </project>
