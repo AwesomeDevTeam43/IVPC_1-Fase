@@ -48,8 +48,8 @@ while True:
         if event.type == QUIT:
             exit()
 
-    if game_opencv.red_y_coords:
-        bar2_y = game_opencv.red_y_coords[0]  # Use the first detected red position
+    if game_opencv.green_y_coords:
+        bar2_y = game_opencv.green_y_coords[0]  # Use the first detected red position
     if game_opencv.blue_y_coords:
         bar1_y = game_opencv.blue_y_coords[0]
 

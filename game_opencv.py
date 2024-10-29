@@ -1,119 +1,133 @@
 import cv2
 import numpy as np
+from cv2 import resizeWindow
 
-# OpenCV settings for color segmentation
+# Inicialização da câmera
 cap = cv2.VideoCapture(0)
 
-# Check if the webcam is opened correctly
+# Verifica se a câmera foi aberta corretamente
 if not cap.isOpened():
-    print("Failed to open the webcam.")
+    print("Erro ao abrir a webcam.")
     exit()
 
-# Define color ranges
-lower_red = np.array([170, 100, 100])  # Lower bound for red
-upper_red = np.array([180, 255, 255])  # Upper bound for red
-lower_blue = np.array([100, 150, 0])  # Lower bound for blue
-upper_blue = np.array([140, 255, 255])  # Upper bound for blue
+# Função para atualizar as *trackbars*
+def nothing(x):
+    pass
 
-red_y_coords = []
+# Criando *trackbars* na janela "Frame Original" para ajuste das cores azul e verde
+cv2.namedWindow("Frame Original")
+
+# Trackbars para o objeto azul
+cv2.createTrackbar("Blue H Min", "Frame Original", 90, 179, nothing)
+cv2.createTrackbar("Blue H Max", "Frame Original", 130, 179, nothing)
+cv2.createTrackbar("Blue S Min", "Frame Original", 50, 255, nothing)
+cv2.createTrackbar("Blue S Max", "Frame Original", 255, 255, nothing)
+cv2.createTrackbar("Blue V Min", "Frame Original", 50, 255, nothing)
+cv2.createTrackbar("Blue V Max", "Frame Original", 255, 255, nothing)
+
+# Trackbars para o objeto verde
+cv2.createTrackbar("Green H Min", "Frame Original", 35, 179, nothing)
+cv2.createTrackbar("Green H Max", "Frame Original", 85, 179, nothing)
+cv2.createTrackbar("Green S Min", "Frame Original", 50, 255, nothing)
+cv2.createTrackbar("Green S Max", "Frame Original", 255, 255, nothing)
+cv2.createTrackbar("Green V Min", "Frame Original", 50, 255, nothing)
+cv2.createTrackbar("Green V Max", "Frame Original", 255, 255, nothing)
+
+green_y_coords = []
 blue_y_coords = []
 
-# Inicializar os valores HSV
-h_min, h_max = 75, 90
-s_min, s_max = 92, 255
-v_min, v_max = 64, 255
-
-# Função para atualizar os valores HSV a partir das trackbars
-def update_hsv_values(val):
-    global h_min, h_max, s_min, s_max, v_min, v_max
-    h_min = cv2.getTrackbarPos('H Min', 'Original Frame')
-    h_max = cv2.getTrackbarPos('H Max', 'Original Frame')
-    s_min = cv2.getTrackbarPos('S Min', 'Original Frame')
-    s_max = cv2.getTrackbarPos('S Max', 'Original Frame')
-    v_min = cv2.getTrackbarPos('V Min', 'Original Frame')
-    v_max = cv2.getTrackbarPos('V Max', 'Original Frame')
-
-# Configuração da janela e das trackbars
-cv2.namedWindow('Original Frame')
-cv2.createTrackbar('H Min', 'Original Frame', h_min, 180, update_hsv_values)
-cv2.createTrackbar('H Max', 'Original Frame', h_max, 180, update_hsv_values)
-cv2.createTrackbar('S Min', 'Original Frame', s_min, 255, update_hsv_values)
-cv2.createTrackbar('S Max', 'Original Frame', s_max, 255, update_hsv_values)
-cv2.createTrackbar('V Min', 'Original Frame', v_min, 255, update_hsv_values)
-cv2.createTrackbar('V Max', 'Original Frame', v_max, 255, update_hsv_values)
-
+# Função principal de processamento de vídeo
 def cv_update():
-    lower_red = np.array([170, 100, 100])  # Lower bound for red
-    upper_red = np.array([180, 255, 255])  # Upper bound for red
-    lower_blue = np.array([h_min, s_min, v_min])  # Lower bound for blue
-    upper_blue = np.array([h_max, s_max, v_max])
+    global cap, green_y_coords, blue_y_coords
 
-
-
-    global red_y_coords, blue_y_coords
-    if cap is None or not cap.isOpened():
-        print("Webcam is not initialized or failed to open.")
-        return
+    min_area = 1000  # Área mínima para contornos
 
     ret, frame = cap.read()
     if not ret or frame is None:
-        print("Failed to capture the image.")
+        print("Erro ao capturar a imagem.")
         return
 
-    # Convert to HSV
+    # Convertendo o quadro para HSV
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    # Create masks for red and blue
-    mask_red = cv2.inRange(hsv, lower_red, upper_red)
+
+    # Obtendo os valores das *trackbars* para a cor azul
+    blue_h_min = cv2.getTrackbarPos("Blue H Min", "Frame Original")
+    blue_h_max = cv2.getTrackbarPos("Blue H Max", "Frame Original")
+    blue_s_min = cv2.getTrackbarPos("Blue S Min", "Frame Original")
+    blue_s_max = cv2.getTrackbarPos("Blue S Max", "Frame Original")
+    blue_v_min = cv2.getTrackbarPos("Blue V Min", "Frame Original")
+    blue_v_max = cv2.getTrackbarPos("Blue V Max", "Frame Original")
+
+    # Criando os limites para o azul
+    lower_blue = np.array([blue_h_min, blue_s_min, blue_v_min])
+    upper_blue = np.array([blue_h_max, blue_s_max, blue_v_max])
+
+    # Obtendo os valores das *trackbars* para a cor verde
+    green_h_min = cv2.getTrackbarPos("Green H Min", "Frame Original")
+    green_h_max = cv2.getTrackbarPos("Green H Max", "Frame Original")
+    green_s_min = cv2.getTrackbarPos("Green S Min", "Frame Original")
+    green_s_max = cv2.getTrackbarPos("Green S Max", "Frame Original")
+    green_v_min = cv2.getTrackbarPos("Green V Min", "Frame Original")
+    green_v_max = cv2.getTrackbarPos("Green V Max", "Frame Original")
+
+    # Criando os limites para o verde
+    lower_green = np.array([green_h_min, green_s_min, green_v_min])
+    upper_green = np.array([green_h_max, green_s_max, green_v_max])
+
+    # Criando máscaras para azul e verde
     mask_blue = cv2.inRange(hsv, lower_blue, upper_blue)
+    mask_green = cv2.inRange(hsv, lower_green, upper_green)
 
-    # Combine the masks
-    mask_combined = cv2.bitwise_or(mask_red, mask_blue)
+    # Combinando as máscaras
+    mask_combined = cv2.bitwise_or(mask_blue, mask_green)
 
-    # Apply the mask to get the segmented result
+    # Aplicando a máscara para obter o resultado segmentado
     result = cv2.bitwise_and(frame, frame, mask=mask_combined)
 
-    # Find contours
-    contours_red, _ = cv2.findContours(mask_red, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    # Encontrando contornos para azul
     contours_blue, _ = cv2.findContours(mask_blue, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    blue_y_coords = []
 
-    # Minimum area for contours
-    min_area = 1000  # Adjust as necessary
-
-    red_y_coords = []  # List to store y-coordinates of detected red areas
-    blue_y_coords = []  # List to store y-coordinates of detected blue areas
-
-    # Process red contours
-    if contours_red:
-        large_contours_red = [contour for contour in contours_red if cv2.contourArea(contour) > min_area]
-        for contour in large_contours_red:
-            x, y, w, h = cv2.boundingRect(contour)
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Draw rectangle around detected red area
-            red_y_coords.append(y)  # Store the y-coordinate
-            print(f"Detected red at y: {y}")  # Print the detected position
-
-    # Process blue contours
     if contours_blue:
         large_contours_blue = [contour for contour in contours_blue if cv2.contourArea(contour) > min_area]
         for contour in large_contours_blue:
             x, y, w, h = cv2.boundingRect(contour)
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Draw rectangle around detected blue area
-            blue_y_coords.append(y)  # Store the y-coordinate
-            print(f"Detected blue at y: {y}")  # Print the detected position
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)  # Retângulo azul
+            blue_y_coords.append(y)
+            print(f"Detectado azul em y: {y}")
 
-    # Display the original image and the masks
-    cv2.imshow("Original Frame", frame)
-    cv2.imshow("Red Mask", mask_red)
-    #cv2.imshow("Blue Mask", mask_blue)
-    cv2.imshow("Combined Mask", mask_combined)
-    cv2.imshow("Segmented Result", result)
+    # Encontrando contornos para verde
+    contours_green, _ = cv2.findContours(mask_green, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    green_y_coords = []
+    img = np.zeros([200, 200, 3], np.uint8)
+    if contours_green:
+        large_contours_green = [contour for contour in contours_green if cv2.contourArea(contour) > min_area]
+        for contour in large_contours_green:
+            x, y, w, h = cv2.boundingRect(contour)
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Retângulo verde
+            green_y_coords.append(y)
+            cv2.putText(img, "green", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+            print(f"Detectado verde em y: {y}")
 
-    # Handle the exit condition
+    # Exibindo o quadro original e os resultados de segmentação
+    resizeWindow("Frame Original", 640, 320)
+    cv2.imshow("Frame Original", frame)
+    cv2.imshow("Máscara Azul", mask_blue)
+    cv2.imshow("Máscara Verde", mask_green)
+    cv2.imshow("Máscara Combinada", mask_combined)
+    cv2.imshow("Resultado Segmentado", result)
+
+    # Pressione 'q' para sair
     if cv2.waitKey(1) & 0xFF == ord('q'):
         cv_cleanup()
 
+
+
+# Função para liberar a câmera e fechar as janelas
 def cv_cleanup():
     global cap
     if cap is not None and cap.isOpened():
         cap.release()
     cv2.destroyAllWindows()
+
 
