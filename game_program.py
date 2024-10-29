@@ -20,11 +20,11 @@ bar = pygame.Surface((10, 50))  # Paddle dimensions
 bar1 = bar.convert()
 bar1.fill((0, 0, 255))  # Blue paddle for Player 1
 bar2 = bar.convert()
-bar2.fill((255, 0, 0))  # Red paddle for Player 2
+bar2.fill((0, 255, 0))  # Green paddle for Player 2
 
 # Ball surface
 circ_sur = pygame.Surface((15, 15))
-pygame.draw.circle(circ_sur, (0, 255, 0), (15 // 2, 15 // 2), 15 // 2)  # Green ball
+pygame.draw.circle(circ_sur, (255, 0, 0), (15 // 2, 15 // 2), 15 // 2)  # Red ball
 circle = circ_sur.convert()
 circle.set_colorkey((0, 0, 0))  # Make the ball background transparent
 
