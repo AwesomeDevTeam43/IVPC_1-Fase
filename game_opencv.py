@@ -102,7 +102,7 @@ def cv_update():
         for contour in large_contours_blue:
             x, y, w, h = cv2.boundingRect(contour)
             cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)  # Retângulo azul
-            blue_y_coords = calcbndrec(h, (y / 2) + h)
+            blue_y_coords = calcbndrec(h, (y + h))
             print(f"Detectado azul em y: {blue_y_coords}")
 
     # Encontrando contornos para verde
