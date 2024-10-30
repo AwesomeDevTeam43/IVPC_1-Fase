@@ -49,9 +49,9 @@ while True:
             exit()
 
     if game_opencv.green_y_coords:
-        bar2_y = game_opencv.green_y_coords[0]  # Use the first detected red position
+        bar2_y = game_opencv.green_y_coords  # Use the first detected red position
     if game_opencv.blue_y_coords:
-        bar1_y = game_opencv.blue_y_coords[0]
+        bar1_y = game_opencv.blue_y_coords
 
     # Render the current scores
     score1 = font.render(str(bar1_score), True, (255, 255, 255))
