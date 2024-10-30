@@ -15,7 +15,7 @@ def nothing(x):
     pass
 
 # Criando *trackbars* na janela "Settings" para ajuste das cores azul e verde
-cv2.namedWindow("Settings")
+cv2.namedWindow("Settings", cv2.WINDOW_GUI_EXPANDED)
 
 # Trackbars para o objeto azul
 cv2.createTrackbar("Blue H Min", "Settings", 90, 179, nothing)
