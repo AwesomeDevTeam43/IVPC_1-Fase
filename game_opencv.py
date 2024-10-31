@@ -41,9 +41,8 @@ def calcbndrec(height, y):
     hf = 480
     hi = hf - height
 
-    coord = (y - my) * (hf / hi) - 60
+    coord = (y + my) * (hf / hi) - 60
     return coord
-
 
 # Função principal de processamento de vídeo
 def cv_update():
@@ -102,7 +101,7 @@ def cv_update():
         for contour in large_contours_blue:
             x, y, w, h = cv2.boundingRect(contour)
             cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)  # Retângulo azul
-            blue_y_coords = calcbndrec(h, (y + h))
+            blue_y_coords = calcbndrec(h, y + (h / 2))
             print(f"Detectado azul em y: {blue_y_coords}")
 
     # Encontrando contornos para verde
@@ -114,7 +113,7 @@ def cv_update():
         for contour in large_contours_green:
             x, y, w, h = cv2.boundingRect(contour)
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Retângulo verde
-            green_y_coords = calcbndrec(h, h + y)
+            green_y_coords = calcbndrec(h, y + (h / 2))
             #cv2.putText(img, "green", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
             print(f"Detectado verde em y: {y}")
 
