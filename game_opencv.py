@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from cv2 import resizeWindow
 
 # Inicialização da câmara
 cap = cv2.VideoCapture(0)
@@ -10,9 +9,11 @@ if not cap.isOpened():
     print("Erro ao abrir a câmara.")
     exit()
 
+
 # Função para atualizar as *trackbars*
 def nothing(x):
     pass
+
 
 # Criação de *trackbars* na janela "Settings" para ajuste das cores azul e verde
 cv2.namedWindow("Settings", cv2.WINDOW_GUI_EXPANDED)
@@ -36,25 +37,25 @@ cv2.createTrackbar("Green V Max", "Settings", 255, 255, nothing)
 green_y_coords = []
 blue_y_coords = []
 
-#def calcbndrec(height, y):
-#    my = height / 2
-#    hf = 480
-#    hi = hf - height
-
-#    coord = (y + my) * (hf / hi) - 60
-#    return coord
 
 def calcbndrec(h, y):
-    s_height = 480   # Altura total da janela (ou altura do quadro)
-    p_height = 50    # Altura do paddle
-    hj_height = 480  # Altura do jogo
-    hc_height = 480  # Altura da câmera
+    """
+    Calculate the new y position of the paddle based on bounding rect height and y.
+    """
+    s_height = 480  # Altura total da janela (ou altura do quadro)
+    p_height = 50  # Altura do paddle
 
-    # Calcula a nova posição do canto superior esquerdo
-    coord = (y) * (hj_height - p_height) / (hc_height - h)
-    # Limita a coordenada para que o paddle não ultrapasse os limites da janela
-    coord = max(0, min(coord, s_height - p_height))
-    return coord
+    # Known range for stuck y values
+    min_stuck_y = 60
+    max_stuck_y = 403
+
+    # Map the y coordinate based on bounding box height h to the range [0, s_height - p_height]
+    scaled_y = int(((y - min_stuck_y) / (max_stuck_y - min_stuck_y)) * (s_height - p_height))
+
+    # Ensure the paddle stays within bounds
+    scaled_y = max(0, min(scaled_y, s_height - p_height))
+    return scaled_y
+
 
 # Função principal de processamento de vídeo
 def cv_update():
@@ -140,6 +141,7 @@ def cv_update():
     # Pressionar 'q' para sair
     if cv2.waitKey(1) & 0xFF == ord('q'):
         cv_cleanup()
+
 
 # Função para fechar a câmara e encerrar as janelas
 def cv_cleanup():
