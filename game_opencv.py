@@ -14,24 +14,24 @@ if not cap.isOpened():
 def nothing(x):
     pass
 
-# Criação de *trackbars* na janela "Configurações" para ajuste das cores azul e verde
+# Criação de *trackbars* na janela "Settings" para ajuste das cores azul e verde
 cv2.namedWindow("Settings", cv2.WINDOW_GUI_EXPANDED)
 
 # Trackbars para o objeto azul
-cv2.createTrackbar("Azul H Min", "Settings", 90, 179, nothing)
-cv2.createTrackbar("Azul H Max", "Settings", 130, 179, nothing)
-cv2.createTrackbar("Azul S Min", "Settings", 50, 255, nothing)
-cv2.createTrackbar("Azul S Max", "Settings", 255, 255, nothing)
-cv2.createTrackbar("Azul V Min", "Settings", 50, 255, nothing)
-cv2.createTrackbar("Azul V Max", "Settings", 255, 255, nothing)
+cv2.createTrackbar("Blue H Min", "Settings", 90, 179, nothing)
+cv2.createTrackbar("Blue H Max", "Settings", 130, 179, nothing)
+cv2.createTrackbar("Blue S Min", "Settings", 50, 255, nothing)
+cv2.createTrackbar("Blue S Max", "Settings", 255, 255, nothing)
+cv2.createTrackbar("Blue V Min", "Settings", 50, 255, nothing)
+cv2.createTrackbar("Blue V Max", "Settings", 255, 255, nothing)
 
 # Trackbars para o objeto verde
-cv2.createTrackbar("Verde H Min", "Settings", 35, 179, nothing)
-cv2.createTrackbar("Verde H Max", "Settings", 85, 179, nothing)
-cv2.createTrackbar("Verde S Min", "Settings", 50, 255, nothing)
-cv2.createTrackbar("Verde S Max", "Settings", 255, 255, nothing)
-cv2.createTrackbar("Verde V Min", "Settings", 50, 255, nothing)
-cv2.createTrackbar("Verde V Max", "Settings", 255, 255, nothing)
+cv2.createTrackbar("Green H Min", "Settings", 35, 179, nothing)
+cv2.createTrackbar("Green H Max", "Settings", 85, 179, nothing)
+cv2.createTrackbar("Green S Min", "Settings", 50, 255, nothing)
+cv2.createTrackbar("Green S Max", "Settings", 255, 255, nothing)
+cv2.createTrackbar("Green V Min", "Settings", 50, 255, nothing)
+cv2.createTrackbar("Green V Max", "Settings", 255, 255, nothing)
 
 green_y_coords = []
 blue_y_coords = []
@@ -71,24 +71,24 @@ def cv_update():
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     # Obtenção dos valores das *trackbars* para a cor azul
-    blue_h_min = cv2.getTrackbarPos("Azul H Min", "Settings")
-    blue_h_max = cv2.getTrackbarPos("Azul H Max", "Settings")
-    blue_s_min = cv2.getTrackbarPos("Azul S Min", "Settings")
-    blue_s_max = cv2.getTrackbarPos("Azul S Max", "Settings")
-    blue_v_min = cv2.getTrackbarPos("Azul V Min", "Settings")
-    blue_v_max = cv2.getTrackbarPos("Azul V Max", "Settings")
+    blue_h_min = cv2.getTrackbarPos("Blue H Min", "Settings")
+    blue_h_max = cv2.getTrackbarPos("Blue H Max", "Settings")
+    blue_s_min = cv2.getTrackbarPos("Blue S Min", "Settings")
+    blue_s_max = cv2.getTrackbarPos("Blue S Max", "Settings")
+    blue_v_min = cv2.getTrackbarPos("Blue V Min", "Settings")
+    blue_v_max = cv2.getTrackbarPos("Blue V Max", "Settings")
 
     # Criação dos limites para o azul
     lower_blue = np.array([blue_h_min, blue_s_min, blue_v_min])
     upper_blue = np.array([blue_h_max, blue_s_max, blue_v_max])
 
     # Obtenção dos valores das *trackbars* para a cor verde
-    green_h_min = cv2.getTrackbarPos("Verde H Min", "Settings")
-    green_h_max = cv2.getTrackbarPos("Verde H Max", "Settings")
-    green_s_min = cv2.getTrackbarPos("Verde S Min", "Settings")
-    green_s_max = cv2.getTrackbarPos("Verde S Max", "Settings")
-    green_v_min = cv2.getTrackbarPos("Verde V Min", "Settings")
-    green_v_max = cv2.getTrackbarPos("Verde V Max", "Settings")
+    green_h_min = cv2.getTrackbarPos("Green H Min", "Settings")
+    green_h_max = cv2.getTrackbarPos("Green H Max", "Settings")
+    green_s_min = cv2.getTrackbarPos("Green S Min", "Settings")
+    green_s_max = cv2.getTrackbarPos("Green S Max", "Settings")
+    green_v_min = cv2.getTrackbarPos("Green V Min", "Settings")
+    green_v_max = cv2.getTrackbarPos("Green V Max", "Settings")
 
     # Criação dos limites para o verde
     lower_green = np.array([green_h_min, green_s_min, green_v_min])
