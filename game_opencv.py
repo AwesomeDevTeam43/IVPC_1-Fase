@@ -40,22 +40,21 @@ blue_y_coords = []
 
 def calcbndrec(h, y):
     """
-    Calculate the new y position of the paddle based on bounding rect height and y.
+    Calcula a nova posição y do paddle com base na altura do bounding rect e y.
     """
     s_height = 480  # Altura total da janela (ou altura do quadro)
     p_height = 50  # Altura do paddle
 
-    # Known range for stuck y values
+    # Intervalo conhecido para valores de y "presos"
     min_stuck_y = 60
     max_stuck_y = 403
 
-    # Map the y coordinate based on bounding box height h to the range [0, s_height - p_height]
+    # Mapeia a coordenada y com base na altura do bounding box h para o intervalo [0, s_height - p_height]
     scaled_y = int(((y - min_stuck_y) / (max_stuck_y - min_stuck_y)) * (s_height - p_height))
 
-    # Ensure the paddle stays within bounds
+    # Garante que o paddle se mantém dentro dos limites
     scaled_y = max(0, min(scaled_y, s_height - p_height))
     return scaled_y
-
 
 # Função principal de processamento de vídeo
 def cv_update():
